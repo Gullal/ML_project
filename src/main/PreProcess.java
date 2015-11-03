@@ -43,76 +43,6 @@ public class PreProcess
 		
 	}
 	
-	public static void generateTriGrams()
-	{
-		loadBiGrams();
-	
-		LinkedHashMap<String,Integer> trigrams = new LinkedHashMap<>();
-		
-		String sentence;
-		System.out.println("Entered TriGrams");
-		int cnt = 0;
-		try
-		{
-			BufferedReader br = new BufferedReader(new FileReader("data/training.txt"));
-			
-			while((sentence = br.readLine()) != null)
-			{
-				sentence = sentence.toLowerCase();
-				
-				Matcher match = pat.matcher(sentence);
-				
-				ArrayList<String> wordsPerLine = new ArrayList<>();
-				
-				String term;
-				
-				while(match.find())
-				{
-					term = sentence.substring(match.start(),match.end());
-					wordsPerLine.add(term);
-				}
-			
-				
-				for(int i = 0; i<wordsPerLine.size()-2; i++)
-				{
-	
-					String pair = wordsPerLine.get(i)+" "+wordsPerLine.get(i+1);
-					String tw = wordsPerLine.get(i+2);
-					
-					if(biGrams.contains(pair))
-					{
-						if(!trigrams.containsKey(pair+" "+tw))
-							trigrams.put(pair+" "+tw, 1);
-						else
-							trigrams.put(pair+" "+tw, trigrams.get(pair+" "+tw)+1);
-					}
-				}
-			}
-			br.close();
-			
-			System.out.println("Going to Sort");
-			trigrams = sortMapByValues(trigrams);
-			
-			BufferedWriter bw = new BufferedWriter(new FileWriter("output/triGrams.txt"));
-			
-			for(Map.Entry<String, Integer> entry: trigrams.entrySet() )
-	        {
-	        	if(entry.getValue() > 1)
-	        	{
-	        		bw.write(entry.getKey()+":"+entry.getValue()+"\n");
-	        	}
-	        }
-			
-			bw.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		System.out.println("TriGrams Done");
-	}
-	
 	public static void loadUniGrams() 
 	{
 		try
@@ -203,6 +133,80 @@ public class PreProcess
 		}
 		
 		System.out.println("Data Division Done");
+	}
+	
+	public static void generateTriGrams()
+	{
+		loadBiGrams();
+	
+		LinkedHashMap<String,Integer> trigrams = new LinkedHashMap<>();
+		
+		String sentence;
+		
+		try
+		{
+			BufferedReader br = new BufferedReader(new FileReader("data/training.txt"));
+			
+			while((sentence = br.readLine()) != null)
+			{
+				sentence = sentence.toLowerCase();
+				
+				Matcher match = pat.matcher(sentence);
+				
+				ArrayList<String> wordsPerLine = new ArrayList<>();
+				
+				String term;
+				
+				while(match.find())
+				{
+					term = sentence.substring(match.start(),match.end());
+					wordsPerLine.add(term);
+				}
+			
+				
+				for(int i = 0; i<wordsPerLine.size()-2; i++)
+				{
+	
+					String pair = wordsPerLine.get(i)+" "+wordsPerLine.get(i+1);
+					String tw = wordsPerLine.get(i+2);
+					
+					if(biGrams.contains(pair))
+					{
+						if(!trigrams.containsKey(pair+" "+tw))
+							trigrams.put(pair+" "+tw, 1);
+						else
+							trigrams.put(pair+" "+tw, trigrams.get(pair+" "+tw)+1);
+					}
+				}
+			}
+			br.close();
+			
+			LinkedHashMap<String,Integer> trigrams2 = new LinkedHashMap<>();
+			for(Map.Entry<String, Integer> entry: trigrams.entrySet() )
+	        {
+	        	if(entry.getValue() > 1)
+	        	{
+	        		trigrams2.put(entry.getKey(), entry.getValue());
+	        	}
+	        }
+			
+			trigrams = sortMapByValues(trigrams2);
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter("output/triGrams.txt"));
+			
+			for(Map.Entry<String, Integer> entry: trigrams.entrySet() )
+	        {
+	        	bw.write(entry.getKey()+":"+entry.getValue()+"\n");  	
+	        }
+			
+			bw.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		System.out.println("TriGrams Done");
 	}
 	
 	public static void generateBiGrams()
