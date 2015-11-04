@@ -1,1 +1,5 @@
 *.txt
+*.tagger
+*.jar
+models/english-left3words-distsim.tagger.props
+*.props
