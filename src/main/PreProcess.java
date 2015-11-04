@@ -2,15 +2,11 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -39,7 +35,7 @@ public class PreProcess
 		
 //		generateBiGrams();
 		
-//		generateTriGrams();
+		generateTriGrams();
 		
 	}
 	
@@ -184,7 +180,7 @@ public class PreProcess
 			LinkedHashMap<String,Integer> trigrams2 = new LinkedHashMap<>();
 			for(Map.Entry<String, Integer> entry: trigrams.entrySet() )
 	        {
-	        	if(entry.getValue() > 1)
+	        	if(entry.getValue() > 2)
 	        	{
 	        		trigrams2.put(entry.getKey(), entry.getValue());
 	        	}
@@ -254,6 +250,7 @@ public class PreProcess
 				}
 			}
 			
+			br.close();
 			
 			bigrams = sortMapByValues(bigrams);
 			
