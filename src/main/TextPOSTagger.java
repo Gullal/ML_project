@@ -21,7 +21,11 @@ public class TextPOSTagger
 	{
 		//posTagWords("training.txt","posBigrams.txt",2);
 		
-		posTagWords("training.txt","posTrigrams.txt",3);
+		//posTagWords("training.txt","posTrigrams.txt",3);
+		
+		//findProbableNextWords("biGrams.txt", "possibleWordsForBigrams.txt");
+		
+		findProbableNextWordsForBigrams("triGrams.txt", "possibleWordsForTrigrams.txt");
 	}
 	
 	public static void posTagWords(String filename,String outputFile, int order)
@@ -107,12 +111,13 @@ public class TextPOSTagger
 		}
 	}
 
-	public static void findProbableNextWords(String filename)
+	public static void findProbableNextWords(String filename, String outputFile)
 	{
 		HashMap<String,ArrayList<String>> nextWords = new HashMap<String,ArrayList<String>>();
 		try
 		{
-			BufferedReader bfr = new BufferedReader(new FileReader("data/"+filename));
+			BufferedReader bfr = new BufferedReader(new FileReader("H:/SS_IIIT/Workspace/NGramModel/data/"+filename));
+			PrintWriter pwOut = new PrintWriter("H:/SS_IIIT/Workspace/NGramModel/output/"+outputFile);
 			String line;
 
 			while((line = bfr.readLine()) != null)
@@ -132,7 +137,57 @@ public class TextPOSTagger
 					nextWords.put(wordPair[0],temp);
 				}
 			}
+			for(Map.Entry<String, ArrayList<String>> entry : nextWords.entrySet())
+			{
+				pwOut.append(entry.getKey() + " : " + entry.getValue()+"\n");
+			}
+			bfr.close();
+			pwOut.close();
+		}
+		catch(IOException ie)
+		{
+			ie.printStackTrace();
+		}
+	}
+	public static void findProbableNextWordsForBigrams(String filename, String outputFile)
+	{
+		HashMap<String,ArrayList<String>> nextWordsForBigrams = new HashMap<String,ArrayList<String>>();
+		try
+		{
+			BufferedReader bfr = new BufferedReader(new FileReader("H:/SS_IIIT/Workspace/NGramModel/data/"+filename));
+			PrintWriter pwOut = new PrintWriter("H:/SS_IIIT/Workspace/NGramModel/output/"+outputFile);
+			String line;
 
+			while((line = bfr.readLine()) != null)
+			{
+				String str = line.split(":")[0];
+				String[] wordPair = str.split(" ");
+				String bigramKey = null;
+				if(wordPair.length == 3)
+				{
+					bigramKey = wordPair[0]+" "+wordPair[1];
+					if(!nextWordsForBigrams.containsKey(bigramKey))
+					{
+						ArrayList<String> temp = new ArrayList<String>();
+						temp.add(wordPair[2]);
+						nextWordsForBigrams.put(bigramKey,temp);
+					}
+					else
+					{
+						ArrayList<String> temp = nextWordsForBigrams.get(bigramKey);
+						temp.add(wordPair[2]);
+						nextWordsForBigrams.put(bigramKey,temp);
+					}
+				}
+				
+				
+			}
+			for(Map.Entry<String, ArrayList<String>> entry : nextWordsForBigrams.entrySet())
+			{
+				pwOut.append(entry.getKey() + " : " + entry.getValue()+"\n");
+			}
+			bfr.close();
+			pwOut.close();
 		}
 		catch(IOException ie)
 		{
@@ -140,3 +195,4 @@ public class TextPOSTagger
 		}
 	}
 }
+
