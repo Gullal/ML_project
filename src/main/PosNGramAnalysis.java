@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -16,7 +14,6 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 public class PosNGramAnalysis 
 {
-	static String[] posLabels = {"DT","JJ","IN","NN","PRP","RB","VB","WDT","WP","FW","TO","MD"};
 	
 	static MaxentTagger tagger = new MaxentTagger("models/english-left3words-distsim.tagger");
 	
@@ -61,7 +58,7 @@ public class PosNGramAnalysis
 			
 			br.close();
 			
-			posTrigrams = sortMapByValues(posTrigrams);
+			posTrigrams = PreProcess.sortMapByValues(posTrigrams);
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter("output/posTrigrams.txt"));
 			
@@ -116,7 +113,7 @@ public class PosNGramAnalysis
 			
 			br.close();
 			
-			posBigrams = sortMapByValues(posBigrams);
+			posBigrams = PreProcess.sortMapByValues(posBigrams);
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter("output/posBigrams.txt"));
 			
@@ -136,20 +133,4 @@ public class PosNGramAnalysis
 			e.printStackTrace();
 		}
 	}
-	
-	public static LinkedHashMap<String,Integer> sortMapByValues(LinkedHashMap<String,Integer> map)
-    {
-        List<Map.Entry<String, Integer>> list = new LinkedList<>(map.entrySet());
- 
-        Collections.sort(list, (Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) -> (o2.getValue()).compareTo(o1.getValue()));
- 
-        LinkedHashMap<String,Integer> sortedMap = new LinkedHashMap<>();
-        
-        for (Map.Entry<String, Integer> entry : list) 
-        {
-            sortedMap.put(entry.getKey(), entry.getValue());
-        }
-        
-        return sortedMap;
-    }
 }
