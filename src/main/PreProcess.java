@@ -319,7 +319,7 @@ public class PreProcess
 	        {
 	        	if(entry.getValue() >= 10)
 	        	{
-	        		bw.write(entry.getKey()+" "+entry.getValue()+"\n");
+	        		bw.write(entry.getKey()+":"+entry.getValue()+"\n");
 	        	}
 	        }
 	        

@@ -27,7 +27,7 @@ public class TextPOSTagger
 		
 //		findProbableNextWordsForBigrams("triGrams.txt", "possibleWordsForTrigrams.txt");
 
-		//findProbableNextWords("posBigrams.txt", "possibleTagsForPOSBigrams.txt");
+//		findProbableNextWords("posBigrams.txt", "possibleTagsForPOSBigrams.txt");
 		
 		findProbableNextWordsForBigrams("posTrigrams.txt", "possibleTagsForPOSTrigrams.txt");
 
@@ -43,7 +43,7 @@ public class TextPOSTagger
 		try
 		{
 			PrintWriter outputPOS = new PrintWriter("output/"+outputFile);
-			BufferedReader bfr = new BufferedReader(new FileReader("data/"+filename));
+			BufferedReader bfr = new BufferedReader(new FileReader("output/"+filename));
 			String line;
 			MaxentTagger tagger =  new MaxentTagger("models/english-left3words-distsim.tagger");
 			while((line = bfr.readLine()) != null)
@@ -123,7 +123,7 @@ public class TextPOSTagger
 
 		try
 		{
-			BufferedReader bfr = new BufferedReader(new FileReader("data/"+filename));
+			BufferedReader bfr = new BufferedReader(new FileReader("output/"+filename));
 			PrintWriter pwOut = new PrintWriter("output/"+outputFile);
 			String line;
 
