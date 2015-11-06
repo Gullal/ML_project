@@ -23,9 +23,9 @@ public class TextPOSTagger
 		
 		//posTagWords("training.txt","posTrigrams.txt",3);
 		
-		//findProbableNextWords("biGrams.txt", "possibleWordsForBigrams.txt");
+		//findProbableNextWords("posBigrams.txt", "possibleTagsForPOSBigrams.txt");
 		
-		findProbableNextWordsForBigrams("triGrams.txt", "possibleWordsForTrigrams.txt");
+		findProbableNextWordsForBigrams("posTrigrams.txt", "possibleTagsForPOSTrigrams.txt");
 	}
 	
 	public static void posTagWords(String filename,String outputFile, int order)
@@ -113,7 +113,7 @@ public class TextPOSTagger
 
 	public static void findProbableNextWords(String filename, String outputFile)
 	{
-		HashMap<String,ArrayList<String>> nextWords = new HashMap<String,ArrayList<String>>();
+		HashMap<String, LinkedHashMap<String,Integer>> nextWords = new HashMap<String,LinkedHashMap<String,Integer>>();
 		try
 		{
 			BufferedReader bfr = new BufferedReader(new FileReader("H:/SS_IIIT/Workspace/NGramModel/data/"+filename));
@@ -122,24 +122,30 @@ public class TextPOSTagger
 
 			while((line = bfr.readLine()) != null)
 			{
-				String str = line.split(":")[0];
-				String[] wordPair = str.split(" ");
-				if(!nextWords.containsKey(wordPair[0]))
+				String[] str = line.split(":");
+				String[] wordPair = str[0].split(" ");
+				if(!nextWords.containsKey(wordPair[1]))
 				{
-					ArrayList<String> temp = new ArrayList<String>();
-					temp.add(wordPair[1]);
-					nextWords.put(wordPair[0],temp);
+					LinkedHashMap<String,Integer> temp = new LinkedHashMap<String,Integer>(); 
+					temp.put(wordPair[0],Integer.parseInt(str[1].trim()));
+					nextWords.put(wordPair[1], temp);
 				}
 				else
 				{
-					ArrayList<String> temp = nextWords.get(wordPair[0]);
-					temp.add(wordPair[1]);
-					nextWords.put(wordPair[0],temp);
+					LinkedHashMap<String,Integer> temp = nextWords.get(wordPair[1]);
+					temp.put(wordPair[0],Integer.parseInt(str[1].trim()));
+					nextWords.put(wordPair[1], temp);
 				}
+				
 			}
-			for(Map.Entry<String, ArrayList<String>> entry : nextWords.entrySet())
+			for(Map.Entry<String, LinkedHashMap<String, Integer>> entry : nextWords.entrySet())
 			{
-				pwOut.append(entry.getKey() + " : " + entry.getValue()+"\n");
+				pwOut.append(entry.getKey() +":\n");
+				LinkedHashMap<String, Integer> sortedWords = PreProcess.sortMapByValues(entry.getValue());
+				for(Map.Entry<String, Integer> next : sortedWords.entrySet())
+				{
+					pwOut.append("\t"+next.getKey()+ " : " + next.getValue()+ "\n");
+				}
 			}
 			bfr.close();
 			pwOut.close();
@@ -151,7 +157,7 @@ public class TextPOSTagger
 	}
 	public static void findProbableNextWordsForBigrams(String filename, String outputFile)
 	{
-		HashMap<String,ArrayList<String>> nextWordsForBigrams = new HashMap<String,ArrayList<String>>();
+		HashMap<String,LinkedHashMap<String, Integer>> nextWordsForBigrams = new HashMap<String,LinkedHashMap<String,Integer>>();
 		try
 		{
 			BufferedReader bfr = new BufferedReader(new FileReader("H:/SS_IIIT/Workspace/NGramModel/data/"+filename));
@@ -160,31 +166,35 @@ public class TextPOSTagger
 
 			while((line = bfr.readLine()) != null)
 			{
-				String str = line.split(":")[0];
-				String[] wordPair = str.split(" ");
+				String[] str = line.split(":");
+				String[] wordPair = str[0].split(" ");
 				String bigramKey = null;
 				if(wordPair.length == 3)
 				{
 					bigramKey = wordPair[0]+" "+wordPair[1];
-					if(!nextWordsForBigrams.containsKey(bigramKey))
+					if(!nextWordsForBigrams.containsKey(wordPair[2]))
 					{
-						ArrayList<String> temp = new ArrayList<String>();
-						temp.add(wordPair[2]);
-						nextWordsForBigrams.put(bigramKey,temp);
+						LinkedHashMap<String,Integer> temp = new LinkedHashMap<String,Integer>();
+						temp.put(bigramKey,Integer.parseInt(str[1].trim()));
+						nextWordsForBigrams.put(wordPair[2],temp);
 					}
 					else
 					{
-						ArrayList<String> temp = nextWordsForBigrams.get(bigramKey);
-						temp.add(wordPair[2]);
-						nextWordsForBigrams.put(bigramKey,temp);
+						LinkedHashMap<String,Integer> temp = nextWordsForBigrams.get(wordPair[2]);
+						temp.put(bigramKey,Integer.parseInt(str[1].trim()));
+						nextWordsForBigrams.put(wordPair[2],temp);
 					}
 				}
-				
-				
 			}
-			for(Map.Entry<String, ArrayList<String>> entry : nextWordsForBigrams.entrySet())
+			for(Map.Entry<String, LinkedHashMap<String,Integer>> entry : nextWordsForBigrams.entrySet())
 			{
-				pwOut.append(entry.getKey() + " : " + entry.getValue()+"\n");
+				pwOut.append(entry.getKey() + ":\n");
+				LinkedHashMap<String, Integer> sortedWords = PreProcess.sortMapByValues(entry.getValue());
+				for(Map.Entry<String, Integer> next : sortedWords.entrySet())
+				{
+					pwOut.append("\t"+next.getKey()+ " : " + next.getValue()+ "\n");
+				}
+				
 			}
 			bfr.close();
 			pwOut.close();
