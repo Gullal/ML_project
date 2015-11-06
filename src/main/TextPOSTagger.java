@@ -26,6 +26,11 @@ public class TextPOSTagger
 //		findProbableNextWords("biGrams.txt", "possibleWordsForBigrams.txt");
 		
 //		findProbableNextWordsForBigrams("triGrams.txt", "possibleWordsForTrigrams.txt");
+
+		//findProbableNextWords("posBigrams.txt", "possibleTagsForPOSBigrams.txt");
+		
+		findProbableNextWordsForBigrams("posTrigrams.txt", "possibleTagsForPOSTrigrams.txt");
+
 	}
 	
 	public static void posTagWords(String filename,String outputFile, int order)
@@ -113,7 +118,9 @@ public class TextPOSTagger
 
 	public static void findProbableNextWords(String filename, String outputFile)
 	{
+
 		HashMap<String,LinkedHashMap<String,Integer>> nextWords = new HashMap<>();
+
 		try
 		{
 			BufferedReader bfr = new BufferedReader(new FileReader("data/"+filename));
@@ -125,6 +132,7 @@ public class TextPOSTagger
 				String[] str = line.split(":");
 				String[] wordPair = str[0].split(" ");
 				LinkedHashMap<String,Integer> temp;
+				
 				if(!nextWords.containsKey(wordPair[1]))
 				{
 					 temp = new LinkedHashMap<>();
@@ -137,13 +145,15 @@ public class TextPOSTagger
 				temp.put(wordPair[0],Integer.parseInt(str[1].trim()));
 				nextWords.put(wordPair[1],temp);
 			}
-			for(Map.Entry<String, LinkedHashMap<String,Integer>> entry : nextWords.entrySet())
+			
+			for(Map.Entry<String, LinkedHashMap<String, Integer>> entry : nextWords.entrySet())
 			{
-				pwOut.append(entry.getKey() + ":\n");
-				LinkedHashMap<String,Integer> sortedWords = PreProcess.sortMapByValues(entry.getValue());
-				for(Map.Entry<String, Integer> entry2 : sortedWords.entrySet())
+				pwOut.append(entry.getKey() +":\n");
+				LinkedHashMap<String, Integer> sortedWords = PreProcess.sortMapByValues(entry.getValue());
+				
+				for(Map.Entry<String, Integer> next : sortedWords.entrySet())
 				{
-					pwOut.append("\t"+entry2.getKey() + " : "+entry2.getValue()+"\n");
+					pwOut.append("\t"+next.getKey()+ " : " + next.getValue()+ "\n");
 				}
 			}
 			bfr.close();
@@ -156,7 +166,9 @@ public class TextPOSTagger
 	}
 	public static void findProbableNextWordsForBigrams(String filename, String outputFile)
 	{
-		HashMap<String,LinkedHashMap<String,Integer>> nextWordsForBigrams = new HashMap<String,LinkedHashMap<String,Integer>>();
+
+		HashMap<String,LinkedHashMap<String,Integer>> nextWordsForBigrams = new HashMap<>();
+
 		try
 		{
 			BufferedReader bfr = new BufferedReader(new FileReader("output/"+filename));
@@ -168,32 +180,31 @@ public class TextPOSTagger
 				String[] str = line.split(":");
 				String[] wordPair = str[0].split(" ");
 				String bigramKey = null;
+				
 				if(wordPair.length == 3)
 				{
 					bigramKey = wordPair[0]+" "+wordPair[1];
+					LinkedHashMap<String,Integer> temp;
 					if(!nextWordsForBigrams.containsKey(wordPair[2]))
 					{
-						LinkedHashMap<String,Integer> temp = new LinkedHashMap<String,Integer>();
-						temp.put(bigramKey,Integer.parseInt(str[1].trim()));
-						nextWordsForBigrams.put(wordPair[2],temp);
+						temp = new LinkedHashMap<String,Integer>();
 					}
 					else
 					{
-						LinkedHashMap<String,Integer> temp = nextWordsForBigrams.get(wordPair[2]);
-						temp.put(bigramKey,Integer.parseInt(str[1].trim()));
-						nextWordsForBigrams.put(wordPair[2],temp);
+						temp = nextWordsForBigrams.get(wordPair[2]);
 					}
+					temp.put(bigramKey,Integer.parseInt(str[1].trim()));
+					nextWordsForBigrams.put(wordPair[2],temp);
 				}
-				
-				
 			}
+			
 			for(Map.Entry<String, LinkedHashMap<String,Integer>> entry : nextWordsForBigrams.entrySet())
 			{
-				pwOut.append(entry.getKey() + " :\n");
-				LinkedHashMap<String,Integer> sortedMap = PreProcess.sortMapByValues(entry.getValue());
-				for(Map.Entry<String,Integer> word : sortedMap.entrySet())
+				pwOut.append(entry.getKey() + ":\n");
+				LinkedHashMap<String, Integer> sortedWords = PreProcess.sortMapByValues(entry.getValue());
+				for(Map.Entry<String, Integer> next : sortedWords.entrySet())
 				{
-					pwOut.append("\t"+word.getKey()+" : "+ word.getValue()+"\n");
+					pwOut.append("\t"+next.getKey()+ " : " + next.getValue()+ "\n");
 				}
 			}
 			bfr.close();
