@@ -43,7 +43,7 @@ public class PreProcess
 	{
 		try
 		{
-			BufferedReader br = new BufferedReader(new FileReader("output/uniGrams.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("output/testUniGrams.txt"));
 			
 			String line;
 			
@@ -51,7 +51,7 @@ public class PreProcess
 			
 			while((line = br.readLine()) != null)
 			{
-				uniGrams.add(line.split(" ")[0]);
+				uniGrams.add(line.split(":")[0]);
 			}
 			
 			br.close();
@@ -66,7 +66,7 @@ public class PreProcess
 	{
 		try
 		{
-			BufferedReader br = new BufferedReader(new FileReader("output/biGrams.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("output/testBiGrams.txt"));
 			
 			String line;
 			
@@ -141,7 +141,7 @@ public class PreProcess
 		
 		try
 		{
-			BufferedReader br = new BufferedReader(new FileReader("data/training.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("data/testing.txt"));
 			
 			while((sentence = br.readLine()) != null)
 			{
@@ -180,7 +180,7 @@ public class PreProcess
 			LinkedHashMap<String,Integer> trigrams2 = new LinkedHashMap<>();
 			for(Map.Entry<String, Integer> entry: trigrams.entrySet() )
 	        {
-	        	if(entry.getValue() > 2)
+	        	if(entry.getValue() > 5)
 	        	{
 	        		trigrams2.put(entry.getKey(), entry.getValue());
 	        	}
@@ -188,7 +188,7 @@ public class PreProcess
 			
 			trigrams = sortMapByValues(trigrams2);
 			
-			BufferedWriter bw = new BufferedWriter(new FileWriter("output/triGrams.txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("output/testTriGrams.txt"));
 			
 			for(Map.Entry<String, Integer> entry: trigrams.entrySet() )
 	        {
@@ -215,7 +215,7 @@ public class PreProcess
 		
 		try
 		{
-			BufferedReader br = new BufferedReader(new FileReader("data/training.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("data/testing.txt"));
 			
 			while((sentence = br.readLine()) != null)
 			{
@@ -254,11 +254,11 @@ public class PreProcess
 			
 			bigrams = sortMapByValues(bigrams);
 			
-			BufferedWriter bw = new BufferedWriter(new FileWriter("output/biGrams.txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("output/testBiGrams.txt"));
 			
 			for(Map.Entry<String, Integer> entry: bigrams.entrySet() )
 	        {
-	        	if(entry.getValue() > 1)
+	        	if(entry.getValue() > 9)
 	        	{
 	        		bw.write(entry.getKey()+":"+entry.getValue()+"\n");
 	        	}
@@ -319,7 +319,7 @@ public class PreProcess
 	        {
 	        	if(entry.getValue() >= 10)
 	        	{
-	        		bw.write(entry.getKey()+" "+entry.getValue()+"\n");
+	        		bw.write(entry.getKey()+":"+entry.getValue()+"\n");
 	        	}
 	        }
 	        

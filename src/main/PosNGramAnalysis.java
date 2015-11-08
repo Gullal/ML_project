@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
@@ -19,9 +16,11 @@ public class PosNGramAnalysis
 	
 	public static void main(String args[])
 	{
+//		UniGramPos();
+		
 //		BiGramPos();
 		
-		TriGramPos();
+//		TriGramPos();
 	}
 	
 	public static void TriGramPos()
@@ -36,9 +35,9 @@ public class PosNGramAnalysis
 			
 			while((line = br.readLine()) != null)
 			{
-				String trigram = line.substring(0, line.indexOf(":"));
+				String[] trigram = line.split(":");
 				
-				String tagdTrigram = tagger.tagString(trigram);
+				String tagdTrigram = tagger.tagString(trigram[0]);
 				
 				String posTrigram = "";
 				
@@ -51,9 +50,9 @@ public class PosNGramAnalysis
 				posTrigram = posTrigram + triplet[2].substring(triplet[2].indexOf("_")+1);
 	
 				if(!posTrigrams.containsKey(posTrigram))
-					posTrigrams.put(posTrigram, 1);
+					posTrigrams.put(posTrigram, Integer.parseInt(trigram[1].trim()));
 				else
-					posTrigrams.put(posTrigram, posTrigrams.get(posTrigram)+1);
+					posTrigrams.put(posTrigram, posTrigrams.get(posTrigram)+Integer.parseInt(trigram[1].trim()));
 			}
 			
 			br.close();
@@ -66,7 +65,7 @@ public class PosNGramAnalysis
 	        {
 	//        	if(entry.getValue() >= 10)
 	        	{
-	        		bw.write(entry.getKey()+" "+entry.getValue()+"\n");
+	        		bw.write(entry.getKey()+":"+entry.getValue()+"\n");
 	        	}
 	        }
 			
@@ -93,9 +92,9 @@ public class PosNGramAnalysis
 			
 			while((line = br.readLine()) != null)
 			{
-				String bigram = line.substring(0, line.indexOf(":"));
+				String[] bigram = line.split(":");
 				
-				String tagdBigram = tagger.tagString(bigram);
+				String tagdBigram = tagger.tagString(bigram[0]);
 				
 				String posBigram = "";
 				
@@ -106,9 +105,9 @@ public class PosNGramAnalysis
 				posBigram = posBigram + pair[1].substring(pair[1].indexOf("_")+1);
 
 				if(!posBigrams.containsKey(posBigram))
-					posBigrams.put(posBigram, 1);
+					posBigrams.put(posBigram, Integer.parseInt(bigram[1].trim()));
 				else
-					posBigrams.put(posBigram, posBigrams.get(posBigram)+1);
+					posBigrams.put(posBigram, posBigrams.get(posBigram)+Integer.parseInt(bigram[1].trim()));
 			}
 			
 			br.close();
@@ -121,7 +120,54 @@ public class PosNGramAnalysis
 	        {
 //	        	if(entry.getValue() >= 10)
 	        	{
-	        		bw.write(entry.getKey()+" "+entry.getValue()+"\n");
+	        		bw.write(entry.getKey()+":"+entry.getValue()+"\n");
+	        	}
+	        }
+			
+			bw.close();
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void UniGramPos()
+	{
+		LinkedHashMap<String,Integer> posUnigrams = new LinkedHashMap<>();
+		
+		try
+		{
+			BufferedReader br = new BufferedReader(new FileReader("output/UniGrams.txt"));
+			
+			String line;
+			
+			while((line = br.readLine()) != null)
+			{
+				String[] unigram = line.split(":");
+				
+				String tagdUnigram = tagger.tagString(unigram[0]);
+				
+				String posUnigram  = tagdUnigram.substring(tagdUnigram.indexOf("_")+1,tagdUnigram.indexOf("_")+4);;
+
+				if(!posUnigrams.containsKey(posUnigram))
+					posUnigrams.put(posUnigram, Integer.parseInt(unigram[1].trim()));
+				else
+					posUnigrams.put(posUnigram, posUnigrams.get(posUnigram)+Integer.parseInt(unigram[1].trim()));
+			}
+			
+			br.close();
+			
+			posUnigrams = PreProcess.sortMapByValues(posUnigrams);
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter("output/posUnigrams.txt"));
+			
+			for(Map.Entry<String, Integer> entry: posUnigrams.entrySet() )
+	        {
+//	        	if(entry.getValue() >= 10)
+	        	{
+	        		bw.write(entry.getKey()+":"+entry.getValue()+"\n");
 	        	}
 	        }
 			
